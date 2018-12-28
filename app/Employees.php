@@ -8,4 +8,5 @@ class Employees extends Model
 {
     //
     protected $table = 'employees';
+    
 }
