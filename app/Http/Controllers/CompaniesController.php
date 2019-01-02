@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Companies;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreCompany;
+use App\Http\Requests\UpdateCompany;
 
 class CompaniesController extends Controller
 {
@@ -15,6 +17,10 @@ class CompaniesController extends Controller
     public function index()
     {
         //
+        return view(
+            'companies.index', 
+            ['companies' => Companies::paginate(10)]
+        );
     }
 
     /**
@@ -25,6 +31,7 @@ class CompaniesController extends Controller
     public function create()
     {
         //
+        return view('companies.create');
     }
 
     /**
@@ -33,9 +40,17 @@ class CompaniesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreCompany $request)
     {
-        //
+        $request->validated();
+        $company = new Companies();
+        $company->fill($request->all());
+        $company->save_logo(
+            $request->file('logo')->path(),
+            $request->file('logo')->getMimeType()
+        );
+        $company->save();
+        return redirect()->action('CompaniesController@show', ['id' => $company->id]);
     }
 
     /**
@@ -44,9 +59,9 @@ class CompaniesController extends Controller
      * @param  \App\Companies  $companies
      * @return \Illuminate\Http\Response
      */
-    public function show(Companies $companies)
+    public function show(Companies $company)
     {
-        //
+        return view('companies.show', ['model' => $company]);
     }
 
     /**
@@ -55,9 +70,10 @@ class CompaniesController extends Controller
      * @param  \App\Companies  $companies
      * @return \Illuminate\Http\Response
      */
-    public function edit(Companies $companies)
+    public function edit(Companies $company)
     {
         //
+        return view('companies.edit', ['model' => $company]);
     }
 
     /**
@@ -67,9 +83,18 @@ class CompaniesController extends Controller
      * @param  \App\Companies  $companies
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Companies $companies)
+    public function update(UpdateCompany $request, Companies $company)
     {
-        //
+        $request->validated();
+        $company->fill($request->all());
+        if ($request->file('logo')) {
+            $company->save_logo(
+                $request->file('logo')->path(),
+                $request->file('logo')->getMimeType()
+            );   
+        }
+        $company->save();
+        return redirect()->action('CompaniesController@show', ['id' => $company->id]);
     }
 
     /**
@@ -78,8 +103,10 @@ class CompaniesController extends Controller
      * @param  \App\Companies  $companies
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Companies $companies)
+    public function destroy(Companies $company)
     {
         //
+        $company->delete();
+        return redirect()->back();
     }
 }
