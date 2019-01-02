@@ -1,3 +1,6 @@
+# About
+Live demo version on https://vuecloud-tech-test.damianpokorski.com
+
 # Vuecloud - Laravel Test (Brief) 
 
 Project to manage companies and their employees. Mini-CRM.
