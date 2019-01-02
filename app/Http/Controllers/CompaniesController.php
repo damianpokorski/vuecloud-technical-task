@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Mail;
 use App\Companies;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreCompany;
@@ -50,6 +50,13 @@ class CompaniesController extends Controller
             $request->file('logo')->getMimeType()
         );
         $company->save();
+        // Send email
+        Mail::send('emails.sample', [], function ($m) {
+            $m->from('techtest@vue-tech-test.damianpokorski.com', 'Vue Tech Test');
+            $m->to('damianpokorski@hotmail.com', 'Damian Pokorski')->subject('Vue tech test - new company has been created!');
+        });
+
+        //
         return redirect()->action('CompaniesController@show', ['id' => $company->id]);
     }
 
