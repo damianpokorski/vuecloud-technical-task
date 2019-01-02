@@ -6,12 +6,10 @@
       <h3>Companies</h3>
     </div>
     <div class="col-sm">
-      {{$companies->links()}}
-    </div>
-    <div class="col-sm">
       <a class="btn btn-secondary float-right" href="{{route('companies.create')}}" role="button">Create</a>
     </div>
   </div>
+  {{$companies->links()}}
 @endsection
 
 @section('card_body')

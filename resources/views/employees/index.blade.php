@@ -6,12 +6,11 @@
       <h3>Employees of {{$company->name}}</h3>
     </div>
     <div class="col-sm">
-      {{$employees->links()}}
-    </div>
-    <div class="col-sm">
       <a class="btn btn-secondary float-right" href="{{route('employees.create', ['company' => $company->id])}}" role="button">Create</a>
     </div>
   </div>
+  
+  {{$employees->appends(['company'=> $company->id])->links()}}
 @endsection
 
 @section('card_body')
