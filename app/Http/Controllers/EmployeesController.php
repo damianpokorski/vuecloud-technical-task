@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Employees;
 use Illuminate\Http\Request;
+use App\Employees;
+use App\Companies;
+use App\Http\Requests\StoreEmployee;
 
 class EmployeesController extends Controller
 {
@@ -12,9 +14,16 @@ class EmployeesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $company = Companies::find($request->company);
+        return view(
+            'employees.index', 
+            [
+            'company' => $company, 
+            'employees' => $company->employees()->paginate(10)
+            ]
+        );
     }
 
     /**
@@ -22,9 +31,11 @@ class EmployeesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         //
+        $company = Companies::find($request->company);
+        return view('employees.create', ['company' => $company]);
     }
 
     /**
@@ -33,9 +44,16 @@ class EmployeesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreEmployee $request)
     {
         //
+        $request->validated();
+        $company = Companies::find($request->company);
+        $employee = new Employees();
+        $employee->fill($request->all());
+        $employee->company_id = $company->id;
+        $employee->save();
+        return redirect()->action('EmployeesController@show', ['id' => $employee->id]);
     }
 
     /**
@@ -44,9 +62,9 @@ class EmployeesController extends Controller
      * @param  \App\Employees  $employees
      * @return \Illuminate\Http\Response
      */
-    public function show(Employees $employees)
+    public function show(Employees $employee)
     {
-        //
+        return view('employees.show', ['employee' => $employee]);
     }
 
     /**
@@ -55,9 +73,9 @@ class EmployeesController extends Controller
      * @param  \App\Employees  $employees
      * @return \Illuminate\Http\Response
      */
-    public function edit(Employees $employees)
+    public function edit(Employees $employee)
     {
-        //
+        return view('employees.edit', ['employee' => $employee]);
     }
 
     /**
@@ -67,9 +85,12 @@ class EmployeesController extends Controller
      * @param  \App\Employees  $employees
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Employees $employees)
+    public function update(StoreEmployee $request, Employees $employee)
     {
-        //
+        $request->validated();
+        $employee->fill($request->all());
+        $employee->save();
+        return redirect()->action('EmployeesController@show', ['id' => $employee->id]);
     }
 
     /**
@@ -78,8 +99,11 @@ class EmployeesController extends Controller
      * @param  \App\Employees  $employees
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Employees $employees)
+    public function destroy(Employees $employee)
     {
         //
+        $redirect = redirect()->action('EmployeesController@index', ['company' => $employee->company_id]);
+        $employee->delete();
+        return $redirect;
     }
 }

@@ -12,11 +12,10 @@
 */
 
 Auth::routes();
-
 Route::middleware('auth')->group(
     function () {
         Route::get('/', 'CompaniesController@index');
         Route::resource('companies', 'CompaniesController');
-        Route::resource('Employees', 'EmployeesController');
+        Route::resource('employees', 'EmployeesController');
     }
 );

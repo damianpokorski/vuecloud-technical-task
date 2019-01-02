@@ -1,8 +1,6 @@
 @extends('layouts.card')
 
 @section('card_header')
-  
-  
   <div class="row">
     <div class="col-sm pt-1">
       <h3>Companies</h3>
@@ -26,6 +24,7 @@
         <th scope="col">Website</th>
         <th scope="col"></th>
         <th scope="col"></th>
+        <th scope="col"></th>
       </tr>
     </thead>
     <tbody>
@@ -42,12 +41,15 @@
         <td>{{$company->email}}</td>
         <td>{{$company->website}}</td>
         <td>
+          <a class="btn btn-sm btn-primary" href="{{route('employees.index',  ['company' => $company->id])}}" role="button">Employees</a>
+        </td>
+        <td>
           {{ Form::open(['route' => ['companies.show', $company], 'method' => 'delete']) }}
-          {{ Form::submit('Delete', ['class' => 'btn btn-danger']) }}
+          {{ Form::submit('&times;', ['class' => 'btn  btn-sm btn-danger']) }}
           {{ Form::close() }}
         </td>
         <td>
-          <a class="btn btn-primary" href="{{route('companies.show', ['companies' => $company])}}" role="button">Edit</a>
+          <a class="btn btn-sm btn-primary" href="{{route('companies.show', ['companies' => $company])}}" role="button">Edit</a>
         </td>
       </tr>
       @endforeach
